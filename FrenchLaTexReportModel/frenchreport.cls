@@ -107,6 +107,16 @@
 	\let\chapter\chapterNew%
 }%
 
+% Chapter sans numerotation de page (Remerciements, abstract, etc)
+\newcommand*\chapterHors[1]{%
+	\let\chapter\chapterOld%
+	\chapter*{{#1}}
+	\addtocontents{toc}{\protect\contentsline{chapter}{{#1}}{}}
+	\protect\thispagestyle{empty}%
+	\vspace*{-10mm}
+	\let\chapter\chapterNew%
+}%
+
 % Section
 \let\sectionOld\section%
 \renewcommand*\section[1]{%
