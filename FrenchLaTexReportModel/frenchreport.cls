@@ -64,6 +64,7 @@
 	\setlength{\parskip}{0.5cm plus 0.5cm minus 0cm}% On replace l'interligne a 1.5 pour le reste du rapport.
 }%
 
+
 % Bibliography
 \let\bibliographyOld\bibliography% On conserve l'ancienne commande pour eviter la recursivite.
 \renewcommand*\bibliography[1] {%
@@ -76,8 +77,7 @@
 	\newpage% On cree une nouvelle page.
 	\let\chapter\chapterNew% On remet ensuite la nouvelle version de chapter.
 	\pagestyle{fancy}% Positionne header et footer sur toutes les pages.
-	\setlength{\parskip}{0.5cm plus 0.5cm minus 0cm}% On replace l'interligne a 1.5 pour le reste du rapport.
-	
+	\setlength{\parskip}{0.5cm plus 0.5cm minus 0cm}% On replace l'interligne a 1.5 pour le reste du rapport.	
 }%
 
 % Counters
@@ -109,7 +109,7 @@
 	\let\chapter\chapterNew%
 }%
 
-% Chapter sans numerotation de page ()
+% Chapter sans numerotation de page (Remerciemments, Abstract...)
 \newcommand*\chapterHors[1]{%
 	\let\chapter\chapterOld%
 	\chapter*{{#1}}
@@ -161,16 +161,6 @@
     	\subsubsubsectionOld*{\hspace*{32mm} \thechapterCounter.\thesectionCounter.\thesubsectionCounter.\thesubsubsectionCounter.\thesubsubsubsectionCounter \hspace*{5mm} {#1} \newline}%
 	\addcontentsline{toc}{section}{\hspace*{15mm} \thechapterCounter.\thesectionCounter.\thesubsectionCounter.\thesubsubsectionCounter.\thesubsubsubsectionCounter \hspace*{5mm} {#1}}%
 	\vspace{0.5mm}
-}%
-
-\newcounter{sectionAnnexeCounter}	  % Compteur pour numerotation automatique des sections.
-\setcounter{sectionAnnexeCounter}{0}	
-
-%ANNEXES
-\newcommand*\sectionAnnexe[1]{
-	\refstepcounter{sectionAnnexeCounter}%
-	\vspace*{-5mm}%
-    	\sectionOld*{\hspace*{8mm} \thesectionAnnexeCounter \hspace*{5mm} {#1}}%
 }%
 
 % FIGURE
