@@ -5,6 +5,17 @@
 % CONTENTS
 \begin{document}
 
+
+\makeatletter
+
+%Necessary change for names. Old version didn't work with hyperref
+\AtBeginDocument{\renewcommand\contentsname{Sommaire}}
+\AtBeginDocument{\renewcommand*\listfigurename{Liste des figures}}
+\AtBeginDocument{\renewcommand*\listtablename{Liste des Tables}}
+
+
+\makeatother
+
 % Page de garde
 \maketitle% Ajout de la page de garde.
 \newpage
