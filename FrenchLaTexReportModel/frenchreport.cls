@@ -2,7 +2,8 @@
 %% Created by Pierre DUPUIS - 2012-2013
 %% Document class which modify the classical report to be closer the french student habits
 %%
-%% Modified by Pierre CRESSANT - 2013
+%% Modified by Pierre CRESSANT - 2013 - 2014
+%% Document class working with hyperref.
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{frenchreport}
@@ -15,6 +16,8 @@
 % Packages
 \RequirePackage{fancyhdr}%
 \RequirePackage{graphicx}%
+\RequirePackage{natbib}%
+
 
 % Header and footer
 \rhead{}%
@@ -25,29 +28,22 @@
 \lfoot{}%
 \renewcommand*{\headrulewidth}{0px}% Retire le trait horizontal en dessous du header.
 \renewcommand*{\footrulewidth}{0px}% Retire le trait horizontal au dessus du footer.
+
 \setlength{\headheight}{23pt}% Correction erreur package fancyhdr.
 \pagestyle{fancy}% Positionne header et footer sur toutes les pages.
 
 % Sommaire
 \let\tableofcontentsOld\tableofcontents% On conserve l'ancienne commande pour eviter la recursivite.
 \renewcommand*\tableofcontents[1][Sommaire] {%
-	\let\thepageOld\thepage
-	\renewcommand*\thepage {%
-	}%
 	\setlength{\parskip}{0cm plus 0cm minus 0cm}% On retire l'interligne pour ne pas trop espacer les titres
 	\let\chapter\chapterOld% On remet l'ancienne version de chapter pour que le sommaire s'affiche convenablement
 	\renewcommand*\contentsname{\textsc{{#1}}}% On renomme le titre de la table des matiere avec l'argument (Sommaire par defaut)
+	\phantomsection%
+	\pdfbookmark{\contentsname}{toc}
 	\tableofcontentsOld% On affiche la table des matieres.
-	\cfoot{}% On retire le numero de page dans le pied de page.
-	\thispagestyle{fancy}% On donne a la page de sommaire le style avec header et footer.
 	\newpage% On cree une nouvelle page.
-	\pagenumbering{arabic}% On met les numeros en chiffres arabes.
-	\setcounter{page}{1}% On remet le compteur de page a 1.
-	\cfoot{\hspace{20mm}--- $\thepage$ ---}% On remet le numero de page dans le pied de page.
 	\let\chapter\chapterNew% On remet ensuite la nouvelle version de chapter.
-	\pagestyle{fancy}% Positionne header et footer sur toutes les pages.
 	\setlength{\parskip}{0.5cm plus 0.5cm minus 0cm}% On replace l'interligne a 1.5 pour le reste du rapport.
-	\let\thepage\thepageOld%
 }%
 
 % List of figures
@@ -55,9 +51,31 @@
 \renewcommand*\listoffigures[1][Liste des figures] {%
 	\setlength{\parskip}{0cm plus 0cm minus 0cm}% On retire l'interligne pour ne pas trop espacer les titres
 	\let\chapter\chapterOld% On remet l'ancienne version de chapter pour que le sommaire s'affiche convenablement
-	\addtocontents{toc}{\protect\contentsline{chapter}{{{#1}}}{}}
+	\phantomsection
+	\addtocontents{toc}{\cftpagenumbersoff{chapter}} 
+	\addcontentsline{toc}{chapter}{{#1}}
+	\addtocontents{toc}{\cftpagenumberson{chapter}} 
+	%\addtocontents{toc}{\protect\contentsline{chapter}{{{#1}}}{}}
 	\renewcommand*\listfigurename{{#1}}% On renomme le titre de la table des matiere avec l'argument (Liste des figures par defaut)
 	\listoffiguresOld% On affiche la table des matieres.
+	\thispagestyle{fancy}% On donne a la page de sommaire le style avec header et footer.
+	\newpage% On cree une nouvelle page.
+	\let\chapter\chapterNew% On remet ensuite la nouvelle version de chapter.
+	\setlength{\parskip}{0.5cm plus 0.5cm minus 0cm}% On replace l'interligne a 1.5 pour le reste du rapport.
+}%
+
+% List of Tables
+\let\listoftablesOld\listoftables% On conserve l'ancienne commande pour eviter la recursivite.
+\renewcommand*\listoftables[1][Liste des tableaux] {%
+	\setlength{\parskip}{0cm plus 0cm minus 0cm}% On retire l'interligne pour ne pas trop espacer les titres
+	\let\chapter\chapterOld% On remet l'ancienne version de chapter pour que le sommaire s'affiche convenablement
+	\phantomsection
+	\addtocontents{toc}{\cftpagenumbersoff{chapter}} 
+	\addcontentsline{toc}{chapter}{{#1}}
+	\addtocontents{toc}{\cftpagenumberson{chapter}} 
+	%\addtocontents{toc}{\protect\contentsline{chapter}{{{#1}}}{}}
+	\renewcommand*\listoftables{{#1}}% On renomme le titre de la table des matiere avec l'argument (Liste des figures par defaut)
+	\listoftablesOld% On affiche la table des matieres.
 	\thispagestyle{fancy}% On donne a la page de sommaire le style avec header et footer.
 	\newpage% On cree une nouvelle page.
 	\let\chapter\chapterNew% On remet ensuite la nouvelle version de chapter.
@@ -70,7 +88,11 @@
 \renewcommand*\bibliography[1] {%
 	\setlength{\parskip}{0cm plus 0cm minus 0cm}% On retire l'interligne pour ne pas trop espacer les titres
 	\let\chapter\chapterOld% On remet l'ancienne version de chapter pour que le sommaire s'affiche convenablement
-	\addtocontents{toc}{\protect\contentsline{chapter}{{Bibliographie}}{}}
+	%\addtocontents{toc}{\protect\contentsline{chapter}{{Bibliographie}}{}}
+	\phantomsection
+	\addtocontents{toc}{\cftpagenumbersoff{chapter}} 
+	\addcontentsline{toc}{chapter}{{Bibliographie}}
+	\addtocontents{toc}{\cftpagenumberson{chapter}} 
 	\bibliographyOld{#1}% On affiche la table des matieres.
 	\cfoot{}% On retire le numero de page dans le pied de page.
 	\thispagestyle{fancy}% On donne a la page de sommaire le style avec header et footer.
@@ -80,30 +102,35 @@
 	\setlength{\parskip}{0.5cm plus 0.5cm minus 0cm}% On replace l'interligne a 1.5 pour le reste du rapport.	
 }%
 
+\setcitestyle{super,open={[},close={]}}%
+
 % Counters
 \newcounter{chapterCounter}			  % Compteur pour numerotation automatique des chapitres.
 \setcounter{chapterCounter}{0}			  % On démarre a 0 car on incremente au debut de chaque chapitre.
 \newcounter{sectionCounter}[chapterCounter]	  % Compteur pour numerotation automatique des sections.
 \newcounter{subsectionCounter}[sectionCounter]	  % Compteur pour numerotation automatique des subsections.
-\newcounter{subsubsectionCounter}[sectionCounter] % Compteur pour numerotation automatique des subsubsections.
-\newcounter{subsubsubsectionCounter}[sectionCounter] % Compteur pour numerotation automatique des subsubsections.
+\newcounter{subsubsectionCounter}[subsectionCounter] % Compteur pour numerotation automatique des subsubsections.
+\newcounter{subsubsubsectionCounter}[subsubsectionCounter] % Compteur pour numerotation automatique des subsubsections.
+\newcounter{sectionAppendixCounter}[chapterCounter]	  % Compteur pour numerotation automatique des subsections.
+
 
 % Chapter
 \let\chapterOld\chapter% On conserve la premiere version de la commande chapter pour eviter la recursivite
 \renewcommand*\chapter[1]{%
 	\refstepcounter{chapterCounter}%
-	\chapterOld*{\uppercase\expandafter{\romannumeral \thechapterCounter} \hspace*{5mm} {#1}} % Chiffres romains majuscules
-	\addcontentsline{toc}{chapter}{\uppercase\expandafter{\romannumeral \thechapterCounter} \hspace*{5mm} {#1}}%
+	\chapterOld*{\thechapterCounter \hspace*{5mm} {#1}} % Chiffres romains majuscules
+	\addcontentsline{toc}{chapter}{\thechapterCounter \hspace*{5mm} {#1}}%
 	\thispagestyle{fancy}% Positionne header et footer sur toutes les pages.
-	\vspace*{-10mm}
-}%
+	\vspace*{-10mm}%
+-}%
 \let\chapterNew\chapter % On cree une commande contenant la version modifiee de chapter pour la remettre dans sommaire
 
 % Chapter sans numerotation (intro, conclu, ...)
 \newcommand*\chapterExtra[1]{%
 	\let\chapter\chapterOld%
+	\phantomsection
+	\addcontentsline{toc}{chapter}{{#1}}	
 	\chapter*{{#1}}
-	\addcontentsline{toc}{chapter}{{#1}}
 	\thispagestyle{fancy}%
 	\vspace*{-10mm}
 	\let\chapter\chapterNew%
@@ -112,24 +139,40 @@
 % Chapter sans numerotation de page (Remerciemments, Abstract...)
 \newcommand*\chapterHors[1]{%
 	\let\chapter\chapterOld%
+	\phantomsection
+	\addtocontents{toc}{\cftpagenumbersoff{chapter}} 
+	\addcontentsline{toc}{chapter}{{#1}}
+	\addtocontents{toc}{\cftpagenumberson{chapter}} 
+	%\addtocontents{toc}{\protect\contentsline{chapter}{\protect\numberline{}Introduction}{}{chapter*.\thepage}}
 	\chapter*{{#1}}
-	\addtocontents{toc}{\protect\contentsline{chapter}{{#1}}{}}
 	\protect\thispagestyle{empty}%
 	\vspace*{-10mm}
 	\let\chapter\chapterNew%
 }%
 
+% Résumé et Abstract
+\newcommand*\chapterResume[1]{%
+	\let\chapter\chapterOld%
+	\chapter*{{#1}}
+	\protect\thispagestyle{empty}%
+	\vspace*{-10mm}
+	\let\chapter\chapterNew%
+}%
 
 % Section
 \let\sectionOld\section%
 \renewcommand*\section[1]{%
 	\refstepcounter{sectionCounter}%
-	\setcounter{subsectionCounter}{0}
-	\setcounter{subsubsectionCounter}{0}
-	\setcounter{subsubsubsectionCounter}{0}
 	\vspace*{-5mm}%
-    	\sectionOld*{\hspace*{8mm} \thechapterCounter.\thesectionCounter \hspace*{5mm} {#1}}%
-	\addcontentsline{toc}{section}{\thechapterCounter.\thesectionCounter \hspace*{5mm} {#1}}%
+    	\sectionOld*{\hspace*{8mm} \thesectionCounter \hspace*{5mm} {#1}}%
+	\addcontentsline{toc}{section}{\thesectionCounter \hspace*{5mm} {#1}}%
+}%
+
+%\SectionAppendix
+\newcommand*\sectionAppendix[1]{
+	\refstepcounter{sectionAppendixCounter}%
+	\vspace*{-5mm}%
+    	\sectionOld*{\hspace*{8mm} \thesectionAppendixCounter \hspace*{5mm} {#1}}%
 }%
 
 % Subection
@@ -139,8 +182,8 @@
 	\setcounter{subsubsectionCounter}{0}
 	\setcounter{subsubsubsectionCounter}{0}
 	\vspace*{0mm}%
-    	\subsectionOld*{\hspace*{16mm} \thechapterCounter.\thesectionCounter.\thesubsectionCounter \hspace*{5mm} {#1}}%
-	\addcontentsline{toc}{section}{\hspace*{5mm} \thechapterCounter.\thesectionCounter.\thesubsectionCounter \hspace*{5mm} {#1}}%
+    	\subsectionOld*{\hspace*{16mm} \thesubsectionCounter \hspace*{5mm} {#1}}%
+	\addcontentsline{toc}{subsection}{\hspace*{5mm} \thesubsectionCounter \hspace*{5mm} {#1}}%
 }%
 
 % Subsubsection
@@ -149,8 +192,8 @@
 	\refstepcounter{subsubsectionCounter}%
 	\setcounter{subsubsubsectionCounter}{0}
 	\vspace*{0mm}%
-    	\subsubsectionOld*{\hspace*{24mm} \thechapterCounter.\thesectionCounter.\thesubsectionCounter.\thesubsubsectionCounter \hspace*{5mm} {#1}}%
-	\addcontentsline{toc}{section}{\hspace*{10mm} \thechapterCounter.\thesectionCounter.\thesubsectionCounter.\thesubsubsectionCounter \hspace*{5mm} {#1}}%
+    	\subsubsectionOld*{\hspace*{24mm} \thesubsubsectionCounter \hspace*{5mm} {#1}}%
+	\addcontentsline{toc}{subsubsection}{\hspace*{10mm} \thesubsubsectionCounter \hspace*{5mm} {#1}}%
 }%
 
 %Paragraph
@@ -158,10 +201,12 @@
 \renewcommand*\paragraph[1]{%
 	\refstepcounter{subsubsubsectionCounter}%
 	\vspace*{0mm}%
-    	\subsubsubsectionOld*{\hspace*{32mm} \thechapterCounter.\thesectionCounter.\thesubsectionCounter.\thesubsubsectionCounter.\thesubsubsubsectionCounter \hspace*{5mm} {#1} \newline}%
-	\addcontentsline{toc}{section}{\hspace*{15mm} \thechapterCounter.\thesectionCounter.\thesubsectionCounter.\thesubsubsectionCounter.\thesubsubsubsectionCounter \hspace*{5mm} {#1}}%
+    	\subsubsubsectionOld*{\hspace*{32mm} \thesubsubsubsectionCounter \hspace*{5mm} {#1} \newline}%
+	\addcontentsline{toc}{section}{\hspace*{15mm} \thesubsubsubsectionCounter \hspace*{5mm} {#1}}%
 	\vspace{0.5mm}
 }%
+
+
 
 % FIGURE
 \newcommand*\fig[3]{% Fonction qui affiche une image de maniere centree et accompagnee de sa legende
@@ -317,3 +362,14 @@
 	\newpage% On insere un saut de page
 }%
 
+%Changes counters for display
+\renewcommand\thesectionCounter{\Roman{chapterCounter}.\arabic{sectionCounter}}
+\renewcommand\thesubsectionCounter{\Roman{chapterCounter}.\arabic{sectionCounter}.\arabic{subsectionCounter}}
+\renewcommand\thesubsubsectionCounter{\Roman{chapterCounter}.\arabic{sectionCounter}.\arabic{subsectionCounter}.\arabic{subsubsectionCounter}}
+\renewcommand{\thechapterCounter}{\Roman{chapterCounter}}
+\renewcommand{\thesectionAppendixCounter}{\Alph{sectionAppendixCounter}}
+
+% Others
+\RequirePackage[colorlinks=true, linkcolor=black, urlcolor=black, citecolor=black]{hyperref}% change ref color; needs to be at the end of the document
+\RequirePackage[all]{hypcap}% to jump to the top of the image instead of the top of the caption; needs to be after hyperref
+\RequirePackage{tocloft} 
