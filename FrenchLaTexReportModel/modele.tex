@@ -21,9 +21,31 @@
 \newpage
 
 % Table des matieres
-\tableofcontents % Sans argument : Sommaire
+\pdfbookmark{\contentsname}{toc}
+\tableofcontents\thispagestyle{empty} % Sans argument : Sommaire
+
+\include{include/Remerciements}
+\include{include/ResumeAbstract}
 
 % Corps du texte
-\include{include/export}
+%\setcounter{page}{1} %Pas nécessaire. A placer avant l'introduction pour gérer son numéro de page
+
+
+\include{include/Introduction}	
+\include{include/Corpus}
+\include{include/Conclusion}
+
+\renewcommand\bibname{Bibliographie}
+\bibliographystyle{ieeetr}
+\bibliography{Biblio}
+
+\pdfbookmark{\listfigurename}{lof}
+\listoffigures\thispagestyle{empty}
+
+\pdfbookmark{\listtablename}{lot}
+\listoftables\thispagestyle{empty}
+
+\include{include/Acronymes}
+\include{include/Annexes}
 
 \end{document}
